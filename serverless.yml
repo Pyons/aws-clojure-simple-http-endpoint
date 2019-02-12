@@ -1,0 +1,19 @@
+service: aws-clojure-simple-http-endpoint
+
+provider:
+  name: aws
+  runtime: java8
+  stage: dev
+  region: eu-central-1
+
+package:
+  artifact: target/uberjar/aws-clojure-simple-http-endpoint.jar
+
+functions:
+  current-time:
+    handler: aws_clojure_simple_http_endpoint.core::handleRequest
+    memorySize: 256
+    events:
+      - http:
+          path: ping
+          method: get
