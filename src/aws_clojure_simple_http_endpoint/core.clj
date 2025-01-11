@@ -3,10 +3,10 @@
     :implements [com.amazonaws.services.lambda.runtime.RequestHandler])
   (:import com.amazonaws.services.lambda.runtime.Context
            com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
-           java.util.Map)
-  (:require [clj-time.core :as t]
-            [clj-time.format :as f]
-            [clojure.data.json :as json]))
+           java.util.Map
+           java.time.ZonedDateTime
+           java.time.format.DateTimeFormatter)
+  (:require [clojure.data.json :as json]))
 
 (defn lambda-integration-response
   "Wraps message into lambda integration response object"
@@ -19,6 +19,6 @@
 (defn -handleRequest
   "Returns the current time"
   [_this ^Map _input ^Context _context]
-  (let [current-time (->> (t/now) (f/unparse (f/formatters :rfc822)))
+  (let [current-time (->> (ZonedDateTime/now) (.format DateTimeFormatter/RFC_1123_DATE_TIME))
         msg (json/write-str {:message (str "Hello, the current time is, " current-time)})]
     (lambda-integration-response msg 200)))
